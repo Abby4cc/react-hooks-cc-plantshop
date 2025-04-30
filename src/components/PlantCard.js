@@ -1,22 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 
-function PlantCard({ plant, onSoldOutToggle }) {
-  const { id, name, image, price, isSoldOut } = plant;
+function PlantCard({ plant, onSoldOutToggle, onUpdatePrice, onDeletePlant }) {
+  const [price, setPrice] = useState(plant.price);
+
+  const handlePriceChange = (e) => {
+    setPrice(e.target.value);
+  };
+
+  const handlePriceUpdate = () => {
+    onUpdatePrice(plant.id, parseFloat(price));
+  };
 
   return (
-    <li className="card" data-testid="plant-item">
-      <img src={image} alt={name} />
-      <h4>{name}</h4>
-      <p>Price: ${price}</p>
-      {isSoldOut ? (
-        <button onClick={() => onSoldOutToggle(id)}>Out of Stock</button>
-      ) : (
-        <button className="primary" onClick={() => onSoldOutToggle(id)}>
-          In Stock
-        </button>
-      )}
+    <li className="card">
+      <img src={plant.image} alt={plant.name} />
+      <h2>{plant.name}</h2>
+      <p>${price}</p>
+      <button onClick={() => onSoldOutToggle(plant.id)}>
+        {plant.isSoldOut ? "Mark as Available" : "Mark as Sold Out"}
+      </button>
+      <input
+        type="number"
+        value={price}
+        onChange={handlePriceChange}
+      />
+      <button onClick={handlePriceUpdate}>Update Price</button>
+      <button onClick={() => onDeletePlant(plant.id)}>Delete</button>
     </li>
   );
 }
 
 export default PlantCard;
+
